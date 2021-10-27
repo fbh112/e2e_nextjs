@@ -22,8 +22,9 @@ spec:
     workspaces:
     - name: output
       workspace: pipeline-shared-data
-  - name: run-nodejs-test # run the nodejst standard test
-    runAfter: git-clone
+  
+  - name: run-test # run the nodejst standard test
+    runAfter: [git-clone]
     taskRef:
       name: npm
     params:
@@ -31,10 +32,10 @@ spec:
         value:
         - install-ci-test
     workspaces:
-    - name: output
+    - name: source
       workspace: pipeline-shared-data
   - name: buildah # build and push the image to image repo
-    runAfter: [git-clone]
+    runAfter: [run-test]
     taskRef:
       name: buildah
       kind: ClusterTask
