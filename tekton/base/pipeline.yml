@@ -1,0 +1,88 @@
+  
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: buildah
+spec:
+  params:
+    - name: app-name
+      type: string
+    - name: source-repo
+      type: string
+    - name: image-repo
+      type: string
+  tasks:
+  - name: git-clone # clone the app repo
+    taskRef:
+      name: git-clone
+      kind: ClusterTask
+    params:
+    - name: url
+      value: $(params.source-repo)
+    workspaces:
+    - name: output
+      workspace: pipeline-shared-data
+  - name: buildah # build and push the image to image repo
+    runAfter: [git-clone]
+    taskRef:
+      name: buildah
+      kind: ClusterTask
+    params:
+      - name: IMAGE
+        value: $(params.image-repo):$(tasks.git-clone.results.commit)
+    workspaces:
+    - name: source
+      workspace: pipeline-shared-data
+  - name: create-configuration # use kustomize to create manifiest file
+    runAfter:
+      - buildah
+    taskRef:
+      name: create-configuration
+    params:
+      - name: app-name
+        value: "$(params.app-name)"
+      - name: source-repo
+        value: "$(params.source-repo)"
+      - name: commit
+        value: "$(tasks.git-clone.results.commit)"
+      - name: image-repo
+        value: "$(params.image-repo)"
+    workspaces:
+      - name: source
+        workspace: pipeline-shared-data
+  - name: deploy # deploy the app according to the manifest file
+    runAfter:
+      - create-configuration
+    taskRef:
+      name: deploy
+    params:
+      - name: app-namespace
+        value: "$(context.pipelineRun.namespace)"
+      - name: manifest
+        value: "$(tasks.create-configuration.results.manifest)"
+    workspaces:
+      - name: source
+        workspace: pipeline-shared-data
+  - name: save-config # save the manifest file to git-ops repo
+    runAfter:
+      - deploy
+    taskRef:
+      name: save-configuration
+    params:
+      - name: app-name
+        value: "$(params.app-name)"
+      - name: manifest
+        value: "$(tasks.create-configuration.results.manifest)"
+      - name: sha
+        value: "$(tasks.git-clone.results.commit)"
+    workspaces:
+      - name: source
+        workspace: pipeline-shared-data
+      - name: target
+        workspace: git-ops-repo
+      - name: git-credentials
+        workspace: mycredentials
+  workspaces:
+  - name: pipeline-shared-data
+  - name: git-ops-repo
+  - name: mycredentials
