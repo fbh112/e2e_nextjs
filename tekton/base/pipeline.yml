@@ -22,6 +22,17 @@ spec:
     workspaces:
     - name: output
       workspace: pipeline-shared-data
+  - name: run-nodejs-test # run the nodejst standard test
+    runAfter: git-clone
+    taskRef:
+      name: npm
+    params:
+      - name: ARGS
+        value:
+        - install-ci-test
+    workspaces:
+    - name: output
+      workspace: pipeline-shared-data
   - name: buildah # build and push the image to image repo
     runAfter: [git-clone]
     taskRef:

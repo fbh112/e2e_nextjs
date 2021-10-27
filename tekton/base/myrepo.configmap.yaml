@@ -5,5 +5,5 @@ metadata:
 data:
   branch: main
   host: github.com
-  org: cloud-native-garage-method-cohort
-  repo: emea-7-production
+  org: fbh112
+  repo: e2e-gitops
