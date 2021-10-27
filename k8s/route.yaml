@@ -9,4 +9,6 @@ spec:
     name: nextjs-sample-app
     kind: Service
     weight: 100
+  port: 
+    targetPort: 3000
   wildcardPolicy: None

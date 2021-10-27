@@ -19,7 +19,7 @@ spec:
         #!/bin/sh
         set -e
 
-        kubectl apply -n $(params.app-namespace) -f ./source/$(params.manifest) --validate=false
+        kubectl apply -n $(params.app-namespace) -f ./source/$(params.manifest) --validate=false # maybetrue
     - name: verify-deploy
       image: quay.io/upslopeio/kubectl:latest
       script: |
