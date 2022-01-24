@@ -6,4 +6,5 @@ RUN npm install
 COPY . .
 RUN npm run build
 #EXPOSE 3000  this is only for documentation purpose
+USER testuser
 CMD ["npm", "start"]
