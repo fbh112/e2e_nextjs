@@ -1,5 +1,5 @@
-#FROM  quay.io/upslopeio/node-alpine
-FROM node:alpine
+FROM  quay.io/upslopeio/node-alpine
+#FROM node:alpine
 WORKDIR /usr/src/app
 COPY package*.json .
 RUN npm install
