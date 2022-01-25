@@ -1,10 +1,9 @@
 FROM  quay.io/upslopeio/node-alpine
 #FROM node:alpine
 WORKDIR /usr/src/app
-COPY package*.json .
+COPY package*.json ./
 RUN npm install
-COPY . .
+COPY . ./
 RUN npm run build
 #EXPOSE 3000  this is only for documentation purpose
-USER testuser
 CMD ["npm", "start"]
