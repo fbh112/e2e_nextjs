@@ -1,7 +1,7 @@
 apiVersion: tekton.dev/v1beta1
 kind: PipelineRun
 metadata:
-  generateName: buildah-
+  generateName: mybuild-
 spec:
   params: 
     - name: app-name
@@ -9,9 +9,9 @@ spec:
     - name: source-repo
       value: https://github.com/fbh112/e2e_nextjs
     - name: image-repo
-      value: quay.io/ting_wu/e2e_nextjs
+      value: quay.io/wu_ting_ibm/e2e_imagerepo
   pipelineRef:
-    name: buildah
+    name: mybuildpl
   serviceAccountName: build-robot
   workspaces:
   - name: pipeline-shared-data
