@@ -23,25 +23,25 @@ spec:
     - name: output
       workspace: pipeline-shared-data
   
-  - name: run-test # run the nodejst standard test
-    runAfter: [git-clone]
-    taskRef:
-      name: npm
-    params:
-      - name: ARGS
-        value:
-        - install-ci-test
-    workspaces:
-    - name: source
-      workspace: pipeline-shared-data
+#  - name: run-test # run the nodejst standard test
+#    runAfter: [git-clone]
+#    taskRef:
+#      name: npm
+#    params:
+#      - name: ARGS
+#        value:
+#        - install-ci-test
+#    workspaces:
+#    - name: source
+#      workspace: pipeline-shared-data
   - name: buildimage # build and push the image to image repo
-    runAfter: [run-test]
+    runAfter: [git-clone]
     taskRef:
       name: docker-build
       kind: Task
     params:
       - name: image
-        value: $(params.image-repo):$(tasks.git-clone.results.commit)
+        value: $(params.image-repo)/$(params.app-name):$(tasks.git-clone.results.commit)
       - name: insecure_registry
         value: "1"
     workspaces:

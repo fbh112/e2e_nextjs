@@ -9,7 +9,7 @@ spec:
     - name: source-repo
       value: https://github.com/fbh112/e2e_nextjs
     - name: image-repo
-      value: quay.io/wu_ting_ibm/e2e_imagerepo
+      value: image-registry.openshift-image-registry.svc:5000/ting-cncamp
   pipelineRef:
     name: mybuildpl
   serviceAccountName: build-robot
